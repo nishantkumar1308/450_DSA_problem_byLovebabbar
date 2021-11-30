@@ -1,0 +1,146 @@
+#include<bits/stdc++.h>
+using namespace std;
+struct graph{
+  int V;
+  list<int>*adj;
+
+public:
+  graph(int v)
+  {
+    this->V=v;
+    adj=new list<int>[v];
+  }
+
+void printcores(int v,vector<int>&degree,int k)
+{
+  for(int i=0;i<v;i++)
+  {
+    if(degree[i]>=k)
+    {
+      cout<<i<<"->";
+      for(auto it: adj[i])
+      {
+        if(degree[it]>=k)
+        {
+          cout<<it<<"->";
+        }
+      }
+      cout<<endl;
+    }
+   
+  }
+
+}
+
+
+
+void dfs(int v,vector<bool>&visited,vector<bool>&processed, vector<int>&degree,int k)
+{
+  visited[v]=true;
+  processed[v]=true;
+  for(auto it:adj[v])
+  {
+    if(visited[it]||processed[it]) continue;
+    degree[it]--;
+    if(degree[it]<k)
+    {
+      dfs(it,visited,processed,degree,k);
+    }
+    
+
+    
+  }
+
+
+ 
+  
+}
+
+
+
+void addEdge(int x,int y)
+{
+  adj[x].push_back(y);
+  adj[y].push_back(x);
+}
+
+
+void printKCores(int k)
+{
+  
+  vector<int>degree(V,0);
+  for(int i=0;i<V;i++)
+  {
+    degree[i]=adj[i].size();
+  }
+  int s=min_element(degree.begin(),degree.end())-degree.begin();
+   //all degree is greater than k
+   if(degree[s]>k)
+   {
+    printcores(V,degree,k);
+    return;
+   }
+
+   vector<bool>processed(V,0);
+   for(int i=0;i<V;i++)
+   {
+    if(processed[i]==0 and degree[i]<k)
+    {
+      vector<bool>visited(V,0);
+      dfs(i,visited,processed,degree,k);
+    }
+   }
+   printcores(V,degree,k);
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+};
+
+
+
+int main()
+{
+   int k = 3;
+    graph g1(9);
+    g1.addEdge(0, 1);
+    g1.addEdge(0, 2);
+    g1.addEdge(1, 2);
+    g1.addEdge(1, 5);
+    g1.addEdge(2, 3);
+    g1.addEdge(2, 4);
+    g1.addEdge(2, 5);
+    g1.addEdge(2, 6);
+    g1.addEdge(3, 4);
+    g1.addEdge(3, 6);
+    g1.addEdge(3, 7);
+    g1.addEdge(4, 6);
+    g1.addEdge(4, 7);
+    g1.addEdge(5, 6);
+    g1.addEdge(5, 8);
+    g1.addEdge(6, 7);
+    g1.addEdge(6, 8);
+    g1.printKCores(k);
+ 
+    cout << endl << endl;
+
+
+ 
+
+}
